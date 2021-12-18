@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Photon.Pun;
+using Photon.Realtime;
+
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class GameController : MonoBehaviour
 {
@@ -23,6 +26,9 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Hashtable props = new Hashtable { };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
         iniPos1.x = -76;
         iniPos2.x = 76;
         iniPos1.y = iniPos2.y = 9; 
