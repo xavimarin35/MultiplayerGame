@@ -1,14 +1,22 @@
 using UnityEngine;
-
+using Photon.Pun;
 
 public class PaddleController : MonoBehaviour
 {
     public string upKey, downKey;
     public float speed;
 
+    private PhotonView myPv;
+
+    private void Start()
+    {
+        myPv = GetComponent<PhotonView>();
+    }
+
     private void Update()
     {
-        PaddleMovement();
+        if (myPv.IsMine)
+            PaddleMovement();
     }
 
     void PaddleMovement()
