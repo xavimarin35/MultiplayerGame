@@ -44,22 +44,22 @@ namespace Photon.Pun.Tanks
             m_StartWait = new WaitForSeconds(m_StartDelay);
             m_EndWait = new WaitForSeconds(m_EndDelay);
 
-            StartGame();
             SpawnAllTanks();
-            SetCameraTargets();
+            //SetCameraTargets();
 
-            StartCoroutine(GameLoop());
+            //StartCoroutine(GameLoop());
         }
 
 
         private void SpawnAllTanks()
         {
+            PhotonNetwork.Instantiate("Tank", m_TankPrefab.transform.position, m_TankPrefab.transform.rotation, 0);
+
             for (int i = 0; i < m_Tanks.Length; i++)
             {
-                m_Tanks[i].m_Instance =
-                    Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
+                //m_Tanks[i].m_Instance = Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
                 m_Tanks[i].m_PlayerNumber = i + 1;
-                m_Tanks[i].Setup();
+                //m_Tanks[i].Setup();
             }
         }
 
@@ -223,14 +223,6 @@ namespace Photon.Pun.Tanks
             {
                 m_Tanks[i].DisableControl();
             }
-        }
-
-        private void StartGame()
-        {
-            Vector3 position = Vector3.one;
-            Quaternion rotation = Quaternion.identity;
-
-            PhotonNetwork.Instantiate("Spaceship", m_TankPrefab.transform.position, m_TankPrefab.transform.rotation, 0);
         }
 
         private bool CheckAllPlayerLoadedLevel()
