@@ -19,12 +19,15 @@ namespace Photon.Pun.Tanks
         public GameObject m_TankPrefab;
         public TankManager[] m_Tanks;
 
+        private int players = 0;
 
         private int m_RoundNumber;
         private WaitForSeconds m_StartWait;
         private WaitForSeconds m_EndWait;
         private TankManager m_RoundWinner;
         private TankManager m_GameWinner;
+
+        public GameObject player;
 
         public static GameManager Instance = null;
 
@@ -52,13 +55,13 @@ namespace Photon.Pun.Tanks
 
         private void SpawnAllTanks()
         {
-            PhotonNetwork.Instantiate("Tank", m_TankPrefab.transform.position, m_TankPrefab.transform.rotation, 0);
+            player = PhotonNetwork.Instantiate("Tank", m_TankPrefab.transform.position, m_TankPrefab.transform.rotation, 0);
+            players++;
 
-            for (int i = 0; i < m_Tanks.Length; i++)
+            for (int i = 0; i < players; i++)
             {
-                //m_Tanks[i].m_Instance = Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
                 m_Tanks[i].m_PlayerNumber = i + 1;
-                //m_Tanks[i].Setup();
+                m_Tanks[i].Setup();
             }
         }
 

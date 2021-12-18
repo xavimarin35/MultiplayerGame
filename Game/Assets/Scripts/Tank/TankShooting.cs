@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+using Photon.Pun;
+
 public class TankShooting : MonoBehaviour
 {
     public int m_PlayerNumber = 1;       
@@ -17,7 +19,9 @@ public class TankShooting : MonoBehaviour
     private string m_FireButton;         
     private float m_CurrentLaunchForce;  
     private float m_ChargeSpeed;         
-    private bool m_Fired;                
+    private bool m_Fired;
+
+    private PhotonView myPV;
 
 
     private void OnEnable()
@@ -29,6 +33,8 @@ public class TankShooting : MonoBehaviour
 
     private void Start()
     {
+        myPV = GetComponent<PhotonView>();
+
         m_FireButton = "Fire" + m_PlayerNumber;
 
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
@@ -36,37 +42,40 @@ public class TankShooting : MonoBehaviour
 
     private void Update()
     {
-        // Track the current state of the fire button and make decisions based on the current launch force.
-
-        m_AimSlider.value = m_MinLaunchForce;
-
-        // Max Charge, not fired
-        if(m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
+        if(myPV.IsMine)
         {
-            m_CurrentLaunchForce = m_MaxLaunchForce;
-            Fire();
-        }
-        // Pressed for the first time
-        else if(Input.GetButtonDown(m_FireButton))
-        {
-            m_Fired = false;
-            m_CurrentLaunchForce = m_MinLaunchForce;
+            // Track the current state of the fire button and make decisions based on the current launch force.
 
-            m_ShootingAudio.clip = m_ChargingClip;
-            m_ShootingAudio.Play();
-        }
-        // Holding the fire
-        else if(Input.GetButton(m_FireButton) && !m_Fired)
-        {
-            m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+            m_AimSlider.value = m_MinLaunchForce;
 
-            m_AimSlider.value = m_CurrentLaunchForce;
-        }
-        // Release button
-        else if(Input.GetButtonUp(m_FireButton) && !m_Fired)
-        {
-            Fire();
-        }
+            // Max Charge, not fired
+            if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
+            {
+                m_CurrentLaunchForce = m_MaxLaunchForce;
+                Fire();
+            }
+            // Pressed for the first time
+            else if (Input.GetButtonDown(m_FireButton))
+            {
+                m_Fired = false;
+                m_CurrentLaunchForce = m_MinLaunchForce;
+
+                m_ShootingAudio.clip = m_ChargingClip;
+                m_ShootingAudio.Play();
+            }
+            // Holding the fire
+            else if (Input.GetButton(m_FireButton) && !m_Fired)
+            {
+                m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+
+                m_AimSlider.value = m_CurrentLaunchForce;
+            }
+            // Release button
+            else if (Input.GetButtonUp(m_FireButton) && !m_Fired)
+            {
+                Fire();
+            }
+        }        
     }
 
 
