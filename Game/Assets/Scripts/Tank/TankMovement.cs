@@ -5,6 +5,8 @@ using System.Threading;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+using Photon.Pun;
+
 public class TankMovement : MonoBehaviour
 {
     public int m_PlayerNumber = 1;         
@@ -21,8 +23,9 @@ public class TankMovement : MonoBehaviour
     private Rigidbody m_Rigidbody;         
     private float m_MovementInputValue;    
     private float m_TurnInputValue;        
-    private float m_OriginalPitch;         
+    private float m_OriginalPitch;
 
+    private PhotonView myPV;
 
     private void Awake()
     {
@@ -46,6 +49,8 @@ public class TankMovement : MonoBehaviour
 
     private void Start()
     {
+        myPV = GetComponent<PhotonView>();
+
         m_MovementAxisName = "Vertical" + m_PlayerNumber;
         m_TurnAxisName = "Horizontal" + m_PlayerNumber;
 
@@ -55,11 +60,14 @@ public class TankMovement : MonoBehaviour
 
     private void Update()
     {
-        // Store the player's input and make sure the audio for the engine is playing.
-        m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
-        m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
+        if(myPV.IsMine)
+        {
+            // Store the player's input and make sure the audio for the engine is playing.
+            m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
+            m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
 
-        EngineAudio();
+            EngineAudio();
+        }
     }
 
 
@@ -89,9 +97,12 @@ public class TankMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Move and turn the tank.
-        Move();
-        Turn();
+        if(myPV.IsMine)
+        {
+            // Move and turn the tank.
+            Move();
+            Turn();
+        }
     }
 
 

@@ -50,7 +50,6 @@ namespace Photon.Pun.Tanks
             //StartCoroutine(GameLoop());
         }
 
-
         private void SpawnAllTanks()
         {
             PhotonNetwork.Instantiate("Tank", m_TankPrefab.transform.position, m_TankPrefab.transform.rotation, 0);
@@ -62,7 +61,6 @@ namespace Photon.Pun.Tanks
                 //m_Tanks[i].Setup();
             }
         }
-
 
         private void SetCameraTargets()
         {
@@ -93,7 +91,6 @@ namespace Photon.Pun.Tanks
             }
         }
 
-
         private IEnumerator RoundStarting()
         {
             ResetAllTanks();
@@ -107,7 +104,6 @@ namespace Photon.Pun.Tanks
             yield return m_StartWait;
         }
 
-
         private IEnumerator RoundPlaying()
         {
             EnableTankControl();
@@ -119,7 +115,6 @@ namespace Photon.Pun.Tanks
                 yield return null;
             }
         }
-
 
         private IEnumerator RoundEnding()
         {
@@ -140,7 +135,6 @@ namespace Photon.Pun.Tanks
             yield return m_EndWait;
         }
 
-
         private bool OneTankLeft()
         {
             int numTanksLeft = 0;
@@ -154,7 +148,6 @@ namespace Photon.Pun.Tanks
             return numTanksLeft <= 1;
         }
 
-
         private TankManager GetRoundWinner()
         {
             for (int i = 0; i < m_Tanks.Length; i++)
@@ -166,7 +159,6 @@ namespace Photon.Pun.Tanks
             return null;
         }
 
-
         private TankManager GetGameWinner()
         {
             for (int i = 0; i < m_Tanks.Length; i++)
@@ -177,7 +169,6 @@ namespace Photon.Pun.Tanks
 
             return null;
         }
-
 
         private string EndMessage()
         {
