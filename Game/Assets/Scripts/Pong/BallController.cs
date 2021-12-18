@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Photon.Pun;
+
 public class BallController : MonoBehaviour
 {
     Rigidbody2D myRb;
@@ -21,7 +23,10 @@ public class BallController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {        
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
         if(!setSpeed)
         {
             setSpeed = true;
