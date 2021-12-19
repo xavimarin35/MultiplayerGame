@@ -27,12 +27,23 @@ public class BallController : MonoBehaviour
         if (!PhotonNetwork.IsMasterClient)
             return;
 
-        if(!setSpeed)
+        if (!setSpeed)
         {
             setSpeed = true;
 
-            xSpeed = Random.Range(10f, 12f) * 2;
-            ySpeed = Random.Range(10f, 12f) * 2;
+            int negativeX = Random.Range(-1, 1);
+            int negativeY = Random.Range(-1, 1);
+
+            if (negativeX >= 0)
+                xSpeed = Random.Range(10f, 12f) * 2;
+            else
+                xSpeed = -Random.Range(10f, 12f) * 2;
+
+            if (negativeY >= 0)
+                ySpeed = Random.Range(10f, 12f) * 2;
+            else
+                ySpeed = -Random.Range(10f, 12f) * 2;
+
         }
 
         MoveBall();
