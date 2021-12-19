@@ -31,8 +31,8 @@ public class BallController : MonoBehaviour
         {
             setSpeed = true;
 
-            int negativeX = Random.Range(-1, 1);
-            int negativeY = Random.Range(-1, 1);
+            int negativeX = Random.Range(-2, 1);
+            int negativeY = Random.Range(-2, 1);
 
             if (negativeX >= 0)
                 xSpeed = Random.Range(10f, 12f) * 2;
@@ -51,7 +51,7 @@ public class BallController : MonoBehaviour
 
     void MoveBall()
     {
-        myRb.velocity = new Vector2(xSpeed, ySpeed);
+        myRb.velocity = new Vector2(xSpeed * 2, ySpeed * 2);
     }
 
     private void OnCollisionEnter2D(Collision2D other)
