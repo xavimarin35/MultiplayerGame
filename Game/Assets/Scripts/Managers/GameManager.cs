@@ -16,10 +16,15 @@ namespace Photon.Pun.Tanks
         public float m_EndDelay = 3f;
         public CameraControl m_CameraControl;
         public Text m_MessageText;
-        public GameObject m_TankPrefab;
-        public TankManager[] m_Tanks;
+        public GameObject m_TankPrefab;     // De moment aquest prefab s'està fent servir només per dir la posició i rotació inicial del tank,
+                                            // s'haurà de canviar i determinar diferents punts des d'on poden sortir cada un dels players
 
-        private int players = 0;
+        public TankManager[] m_Tanks;       // La llista de TankManager es on es guardaven els tanks abans, ara tenim dos GameObjects que es creen
+                                            // i hem de canviar aquesta llista perquè tot el joc està fet en funció del TankManager
+
+        public GameObject[] tanks;
+
+        public int tanksSpawned; // Just to check if all tanks are spawning, a counter
 
         private int m_RoundNumber;
         private WaitForSeconds m_StartWait;
@@ -27,9 +32,7 @@ namespace Photon.Pun.Tanks
         private TankManager m_RoundWinner;
         private TankManager m_GameWinner;
 
-        public GameObject player;
-
-        public static GameManager Instance = null;
+        public static GameManager Instance;
 
         public void Awake()
         {
@@ -39,15 +42,17 @@ namespace Photon.Pun.Tanks
         private void Start()
         {
             Hashtable props = new Hashtable
-        {
-            {TanksGame.PLAYER_LOADED_LEVEL, true }
-        };
+            {
+                {TanksGame.PLAYER_LOADED_LEVEL, true }
+            };
+
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
 
             m_StartWait = new WaitForSeconds(m_StartDelay);
             m_EndWait = new WaitForSeconds(m_EndDelay);
 
             SpawnAllTanks();
+
             //SetCameraTargets();
 
             //StartCoroutine(GameLoop());
@@ -55,14 +60,9 @@ namespace Photon.Pun.Tanks
 
         private void SpawnAllTanks()
         {
-            player = PhotonNetwork.Instantiate("Tank", m_TankPrefab.transform.position, m_TankPrefab.transform.rotation, 0);
-            players++;
+            PhotonNetwork.Instantiate("Tank", m_TankPrefab.transform.position, m_TankPrefab.transform.rotation, 0);
 
-            for (int i = 0; i < players; i++)
-            {
-                m_Tanks[i].m_PlayerNumber = i + 1;
-                m_Tanks[i].Setup();
-            }
+            // m_Tanks[i].Setup();
         }
 
         private void SetCameraTargets()

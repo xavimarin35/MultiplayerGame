@@ -34,7 +34,6 @@ public class TankManager
         }
     }
 
-
     public void DisableControl()
     {
         m_Movement.enabled = false;
@@ -43,7 +42,6 @@ public class TankManager
         m_CanvasGameObject.SetActive(false);
     }
 
-
     public void EnableControl()
     {
         m_Movement.enabled = true;
@@ -51,7 +49,6 @@ public class TankManager
 
         m_CanvasGameObject.SetActive(true);
     }
-
 
     public void Reset()
     {

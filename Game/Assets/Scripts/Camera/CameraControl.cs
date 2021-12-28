@@ -11,8 +11,7 @@ public class CameraControl : MonoBehaviour
     private Camera m_Camera;                        
     private float m_ZoomSpeed;                      
     private Vector3 m_MoveVelocity;                 
-    private Vector3 m_DesiredPosition;              
-
+    private Vector3 m_DesiredPosition;
 
     private void Awake()
     {
