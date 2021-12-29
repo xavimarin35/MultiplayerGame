@@ -42,7 +42,7 @@ public class TankShooting : MonoBehaviour
 
     private void Update()
     {
-        if(myPV.IsMine)
+        if (myPV.IsMine)
         {
             // Track the current state of the fire button and make decisions based on the current launch force.
 
@@ -85,9 +85,11 @@ public class TankShooting : MonoBehaviour
 
         m_Fired = true;
 
-        Rigidbody shellInstance = Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+        PhotonNetwork.Instantiate("Shell", m_FireTransform.position, m_FireTransform.rotation).GetComponent<Rigidbody>().velocity = m_CurrentLaunchForce * m_FireTransform.forward;
 
-        shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
+        //Rigidbody shellInstance = Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+
+        //shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
 
         m_ShootingAudio.clip = m_FireClip;
         m_ShootingAudio.Play();
