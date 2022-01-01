@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 using Photon.Realtime;
 using Photon.Pun.UtilityScripts;
@@ -22,7 +23,7 @@ namespace Photon.Pun.Tanks
         public TankManager[] m_Tanks;       // La llista de TankManager es on es guardaven els tanks abans, ara tenim dos GameObjects que es creen
                                             // i hem de canviar aquesta llista perquè tot el joc està fet en funció del TankManager
 
-        public GameObject[] tanks;
+        public List<GameObject> tanks;
 
         public int tanksSpawned; // Just to check if all tanks are spawning, a counter
 
@@ -31,6 +32,8 @@ namespace Photon.Pun.Tanks
         private WaitForSeconds m_EndWait;
         private TankManager m_RoundWinner;
         private TankManager m_GameWinner;
+
+        private bool renamedTanks = false;
 
         public static GameManager Instance;
 
@@ -53,16 +56,47 @@ namespace Photon.Pun.Tanks
 
             SpawnAllTanks();
 
+            // Nombre de jugadors = Nombre de tanks
+            tanksSpawned = PhotonNetwork.CurrentRoom.PlayerCount;
+
+            
+
             //SetCameraTargets();
 
             //StartCoroutine(GameLoop());
         }
 
+        private void FixedUpdate()
+        {
+            if(!renamedTanks)
+            {
+                AssignTanks(tanksSpawned);
+
+                renamedTanks = true;
+            }
+            
+        }
+
         private void SpawnAllTanks()
         {
-            PhotonNetwork.Instantiate("Tank", m_TankPrefab.transform.position, m_TankPrefab.transform.rotation, 0);
+            PhotonNetwork.Instantiate("Tank", m_TankPrefab.transform.position, m_TankPrefab.transform.rotation);         
 
             // m_Tanks[i].Setup();
+        }
+
+        private void AssignTanks(int tanks)
+        {
+            for (int i = 0; i < tanks; ++i)
+            {
+                // If there is a tank named Tank(Clone), change its number and name
+                if (GameObject.Find("Tank(Clone)") != null)
+                {
+                    int number = i + 1;
+
+                    GameObject.Find("Tank(Clone)").GetComponent<TankMovement>().m_PlayerNumber = number;
+                    GameObject.Find("Tank(Clone)").name = "Tank" + number;
+                }
+            }
         }
 
         private void SetCameraTargets()
