@@ -85,7 +85,7 @@ public class TankShooting : MonoBehaviour
 
         m_Fired = true;
 
-        PhotonNetwork.Instantiate("Shell", m_FireTransform.position, m_FireTransform.rotation).GetComponent<Rigidbody>().velocity = m_CurrentLaunchForce * m_FireTransform.forward;
+        PhotonNetwork.Instantiate("PhotonPrefabs/Shell", m_FireTransform.position, m_FireTransform.rotation).GetComponent<Rigidbody>().velocity = m_CurrentLaunchForce * m_FireTransform.forward;
 
         //Rigidbody shellInstance = Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
