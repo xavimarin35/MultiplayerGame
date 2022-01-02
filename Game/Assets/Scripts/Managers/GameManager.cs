@@ -243,14 +243,6 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if(stream.IsWriting)
-        {
-            stream.SendNext(true);
-            stream.SendNext(2);
-        }
-        else
-        {
-
-        }
+        
     }
 }
