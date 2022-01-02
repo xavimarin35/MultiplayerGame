@@ -7,12 +7,11 @@ using Photon.Pun;
 
 public class MainManager : MonoBehaviourPunCallbacks
 {
-
     public static MainManager instance;
 
     private void Awake()
     {
-        if(instance)
+        if (instance)
         {
             Destroy(gameObject);
             return;
@@ -40,7 +39,7 @@ public class MainManager : MonoBehaviourPunCallbacks
         if(scene.buildIndex == 1)
         {
             PhotonNetwork.Instantiate("PhotonPrefabs/PlayerManager", Vector3.zero, Quaternion.identity);
-            PhotonNetwork.InstantiateRoomObject("PhotonPrefabs/GameManager", Vector3.zero, Quaternion.identity);
+            PhotonNetwork.Instantiate("PhotonPrefabs/GameManager", Vector3.zero, Quaternion.identity);
         }
     }
 }

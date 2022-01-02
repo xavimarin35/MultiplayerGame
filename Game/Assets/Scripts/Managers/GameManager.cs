@@ -9,24 +9,23 @@ using Photon.Realtime;
 
 public class GameManager : MonoBehaviourPun, IPunObservable
 {
+    // Tot això és el que feiem servir abans, segurament es podrà borrar quan el joc estigui acabat
     public int m_NumRoundsToWin = 5;
     public float m_StartDelay = 3f;
     public float m_EndDelay = 3f;
     public CameraControl m_CameraControl;
     public Text m_MessageText;
-    public GameObject m_TankPrefab;     // De moment aquest prefab s'està fent servir només per dir la posició i rotació inicial del tank,
-                                        // s'haurà de canviar i determinar diferents punts des d'on poden sortir cada un dels players
+    public GameObject m_TankPrefab;
 
-    public TankManager[] m_Tanks;       // La llista de TankManager es on es guardaven els tanks abans, ara tenim dos GameObjects que es creen
-                                        // i hem de canviar aquesta llista perquè tot el joc està fet en funció del TankManager
-
-    public int tanksSpawned; // Just to check if all tanks are spawning, a counter
+    public TankManager[] m_Tanks;
 
     private int m_RoundNumber;
     private WaitForSeconds m_StartWait;
     private WaitForSeconds m_EndWait;
     private TankManager m_RoundWinner;
     private TankManager m_GameWinner;
+
+    // Fins aquí ------------------------------------------------------------------------------------
 
     public static GameManager Instance;
 
@@ -43,6 +42,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
+        // How many players are there in the room
         PlayersRemaining = PhotonNetwork.PlayerList.Length;
 
         for (int i = 0; i < PlayersRemaining; ++i)
@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         //StartCoroutine(GameLoop());
     }
 
+    // En principi es pot borrar perquè el follow camera ja funciona (WIP)
     private void SetCameraTargets()
     {
         Transform[] targets = new Transform[m_Tanks.Length];
@@ -65,7 +66,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         m_CameraControl.m_Targets = targets;
     }
 
-
+    // Tot això s'haurà de borrar o refer perquè el game loop ara és diferent
     private IEnumerator GameLoop()
     {
         yield return StartCoroutine(RoundStarting());
@@ -207,21 +208,47 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         }
     }
 
+    // Fins aquí ---------------------------------------------------------------------------
+
     public GameObject ReturnPlayerAlive()
     {
-        GameObject player;
+        GameObject player = null;
         int actor_num = -1;
 
         for(int i = 0; i < PlayersRemaining; i++)
         {
             if (players_alive[i] == true)
-                actor_num = i+1;
+                actor_num = i + 1;
         }
 
-        // player = PhotonNetwork.CurrentRoom.GetPlayer(actor_num).TagObject as GameObject;
-        player = GameObject.Find("TankBlue(Clone)");
+        //player = PhotonNetwork.CurrentRoom.GetPlayer(actor_num).TagObject as GameObject;
+
+        player = FindTank(actor_num);
 
         return player;
+    }
+
+    private GameObject FindTank(int actor)
+    {
+        GameObject tank = null;
+
+        switch(actor)
+        {
+            case 1:
+                tank = GameObject.Find("TankBlue(Clone)");
+                break;
+            case 2:
+                tank = GameObject.Find("TankRed(Clone)");
+                break;
+            case 3:
+                tank = GameObject.Find("TankYellow(Clone)");
+                break;
+            case 4:
+                tank = GameObject.Find("TankGreen(Clone)");
+                break;
+        }
+
+        return tank;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
