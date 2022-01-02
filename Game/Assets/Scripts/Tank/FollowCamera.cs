@@ -1,0 +1,49 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Photon.Pun;
+
+public class FollowCamera : MonoBehaviourPun
+{
+    public Transform target;
+    public float distance = 10.0f;
+    public float height = 5.0f;
+
+    public float heightDmp = 2.0f;
+    public float rotateDmp = 3.0f;
+
+    GameObject GM;
+    GameObject player;
+
+    void LateUpdate()
+    {
+        if (GM == null)
+            GM = GameObject.Find("GameManager(Clone)");
+
+        if(!target)
+        {
+            player = GM.GetComponent<GameManager>().ReturnPlayerAlive();
+
+            if (player)
+                target = player.transform;
+        }
+
+        float wantedA = target.eulerAngles.y;
+        float wantedH = target.position.y + height;
+
+        float currentA = transform.eulerAngles.y;
+        float currentH = transform.position.y;
+
+        currentA = Mathf.LerpAngle(currentA, wantedA, rotateDmp * Time.deltaTime);
+        currentH = Mathf.Lerp(currentH, wantedH, heightDmp * Time.deltaTime);
+
+        var currentR = Quaternion.Euler(0, currentA, 0);
+
+        transform.position = target.position;
+        transform.position -= currentR * Vector3.forward * distance;
+
+        transform.position = new Vector3(transform.position.x, currentH, transform.position.z);
+
+        transform.LookAt(target);
+    }
+}

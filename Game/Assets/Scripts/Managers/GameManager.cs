@@ -20,8 +20,6 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     public TankManager[] m_Tanks;       // La llista de TankManager es on es guardaven els tanks abans, ara tenim dos GameObjects que es creen
                                         // i hem de canviar aquesta llista perquè tot el joc està fet en funció del TankManager
 
-    public List<GameObject> tanks;
-
     public int tanksSpawned; // Just to check if all tanks are spawning, a counter
 
     private int m_RoundNumber;
@@ -30,9 +28,10 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     private TankManager m_RoundWinner;
     private TankManager m_GameWinner;
 
-    private bool renamedTanks = false;
-
     public static GameManager Instance;
+
+    public int PlayersRemaining = 0;
+    [SerializeField] public bool[] players_alive = { false, false, false, false };
 
     public void Awake()
     {
@@ -44,47 +43,14 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
-        // SpawnAllTanks();
+        PlayersRemaining = PhotonNetwork.PlayerList.Length;
 
-        // Nombre de jugadors = Nombre de tanks
-        // tanksSpawned = PhotonNetwork.CurrentRoom.PlayerCount;
-
-        //SetCameraTargets();
+        for (int i = 0; i < PlayersRemaining; ++i)
+        {
+            players_alive[i] = true;
+        }
 
         //StartCoroutine(GameLoop());
-    }
-
-    private void FixedUpdate()
-    {
-        if (!renamedTanks)
-        {
-            // AssignTanks(tanksSpawned);
-
-            renamedTanks = true;
-        }
-
-    }
-
-    private void SpawnAllTanks()
-    {
-        PhotonNetwork.Instantiate("PhotonPrefabs/Tank", m_TankPrefab.transform.position, m_TankPrefab.transform.rotation);
-
-        // m_Tanks[i].Setup();
-    }
-
-    private void AssignTanks(int tanks)
-    {
-        for (int i = 0; i < tanks; ++i)
-        {
-            // If there is a tank named Tank(Clone), change its number and name
-            if (GameObject.Find("Tank(Clone)") != null)
-            {
-                int number = i + 1;
-
-                GameObject.Find("Tank(Clone)").GetComponent<TankMovement>().m_PlayerNumber = number;
-                GameObject.Find("Tank(Clone)").name = "Tank" + number;
-            }
-        }
     }
 
     private void SetCameraTargets()
@@ -239,6 +205,23 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         {
             m_Tanks[i].DisableControl();
         }
+    }
+
+    public GameObject ReturnPlayerAlive()
+    {
+        GameObject player;
+        int actor_num = -1;
+
+        for(int i = 0; i < PlayersRemaining; i++)
+        {
+            if (players_alive[i] == true)
+                actor_num = i+1;
+        }
+
+        // player = PhotonNetwork.CurrentRoom.GetPlayer(actor_num).TagObject as GameObject;
+        player = GameObject.Find("TankBlue(Clone)");
+
+        return player;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
