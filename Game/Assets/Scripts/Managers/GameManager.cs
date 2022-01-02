@@ -218,12 +218,18 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         for(int i = 0; i < PlayersRemaining; i++)
         {
             if (players_alive[i] == true)
+            {
                 actor_num = i + 1;
+
+                player = FindTank(actor_num);
+
+                if (player != null)
+                {
+                    if (player.GetComponent<PhotonView>().IsMine)
+                        return player;
+                }
+            }
         }
-
-        //player = PhotonNetwork.CurrentRoom.GetPlayer(actor_num).TagObject as GameObject;
-
-        player = FindTank(actor_num);
 
         return player;
     }
@@ -245,6 +251,10 @@ public class GameManager : MonoBehaviourPun, IPunObservable
                 break;
             case 4:
                 tank = GameObject.Find("TankGreen(Clone)");
+                break;
+
+            default:
+                tank = GameObject.Find("TankBlue(Clone)");
                 break;
         }
 
