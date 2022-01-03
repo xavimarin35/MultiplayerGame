@@ -6,8 +6,9 @@ using Photon.Pun;
 public class FollowCamera : MonoBehaviourPun
 {
     public Transform target;
-    public float distance = 10.0f;
-    public float height = 5.0f;
+    public float distance = 17.0f;
+    public float height = 8.0f;
+    public Vector3 offset;
 
     public float heightDmp = 2.0f;
     public float rotateDmp = 3.0f;
@@ -20,7 +21,7 @@ public class FollowCamera : MonoBehaviourPun
         if (GM == null)
             GM = GameObject.Find("GameManager(Clone)");
 
-        if(!target)
+        if (!target)
         {
             player = GM.GetComponent<GameManager>().ReturnPlayerAlive();
 
@@ -40,10 +41,19 @@ public class FollowCamera : MonoBehaviourPun
         var currentR = Quaternion.Euler(0, currentA, 0);
 
         transform.position = target.position;
-        transform.position -= currentR * Vector3.forward * distance;
+        transform.position -= currentR * Vector3.forward * (distance + offset.z);
 
         transform.position = new Vector3(transform.position.x, currentH, transform.position.z);
 
         transform.LookAt(target);
+
+        //offset = transform.position - target.position;
+
+        //Vector3 newPos = target.position + offset;
+
+        //transform.position = Vector3.Slerp(transform.position, newPos, smooth);
+
+        //if (LookAtPlayer)
+        //    transform.LookAt(target);
     }
 }
