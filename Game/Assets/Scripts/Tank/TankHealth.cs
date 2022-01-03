@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public class TankHealth : MonoBehaviour
+public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
 {
+    PhotonView PV;
+
     public float m_StartingHealth = 100f;          
     public Slider m_Slider;                        
     public Image m_FillImage;                      
@@ -19,12 +22,21 @@ public class TankHealth : MonoBehaviour
 
     private void Awake()
     {
+        PV = GetComponent<PhotonView>();
+
         m_ExplosionParticles = Instantiate(m_ExplosionPrefab).GetComponent<ParticleSystem>();
         m_ExplosionAudio = m_ExplosionParticles.GetComponent<AudioSource>();
 
         m_ExplosionParticles.gameObject.SetActive(false);
+
+        if (PV.IsMine)
+            Camera.main.GetComponent<FollowCamera>().target = gameObject.transform;
     }
 
+    void Start()
+    {
+        PV.Owner.TagObject = gameObject;
+    }
 
     private void OnEnable()
     {
@@ -37,6 +49,9 @@ public class TankHealth : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
+        if (!PV.IsMine)
+            return;
+
         // Adjust the tank's current health, update the UI based on the new health and check whether or not the tank is dead.
 
         m_CurrentHealth -= amount;
@@ -72,5 +87,14 @@ public class TankHealth : MonoBehaviour
         m_ExplosionAudio.Play();
 
         gameObject.SetActive(false);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+            stream.SendNext(m_CurrentHealth);
+
+        else
+            m_CurrentHealth = (float)stream.ReceiveNext();
     }
 }

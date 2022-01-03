@@ -20,9 +20,12 @@ public class TankShooting : MonoBehaviour
     private float m_CurrentLaunchForce;  
     private float m_ChargeSpeed;         
     private bool m_Fired;
+    private bool holding;
 
     private PhotonView myPV;
 
+    protected Vector3 aimPoint;
+    public GameObject turret;
 
     private void OnEnable()
     {
@@ -44,34 +47,48 @@ public class TankShooting : MonoBehaviour
     {
         if (myPV.IsMine)
         {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if(Physics.Raycast(ray, out hit))
+            {
+                aimPoint = new Vector3(hit.point.x, 0.1f, hit.point.z);
+            }
+
+            Vector3 direction = aimPoint - turret.transform.position;
+            direction.y = 0;
+
+            turret.transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+
             // Track the current state of the fire button and make decisions based on the current launch force.
 
             m_AimSlider.value = m_MinLaunchForce;
 
             // Max Charge, not fired
-            if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
+            if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired && holding)
             {
                 m_CurrentLaunchForce = m_MaxLaunchForce;
                 Fire();
             }
             // Pressed for the first time
-            else if (Input.GetButtonDown(m_FireButton))
+            else if (Input.GetMouseButtonDown(0))
             {
                 m_Fired = false;
+                holding = true;
                 m_CurrentLaunchForce = m_MinLaunchForce;
 
                 m_ShootingAudio.clip = m_ChargingClip;
                 m_ShootingAudio.Play();
             }
             // Holding the fire
-            else if (Input.GetButton(m_FireButton) && !m_Fired)
+            else if (!Input.GetMouseButtonUp(0) && holding && !m_Fired)
             {
                 m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
 
                 m_AimSlider.value = m_CurrentLaunchForce;
             }
             // Release button
-            else if (Input.GetButtonUp(m_FireButton) && !m_Fired)
+            else if (Input.GetMouseButtonUp(0) && holding)
             {
                 Fire();
             }
@@ -83,9 +100,11 @@ public class TankShooting : MonoBehaviour
     {
         // Instantiate and launch the shell.
 
+        holding = false;
         m_Fired = true;
 
-        PhotonNetwork.Instantiate("PhotonPrefabs/Shell", m_FireTransform.position, m_FireTransform.rotation).GetComponent<Rigidbody>().velocity = m_CurrentLaunchForce * m_FireTransform.forward;
+        GameObject bullet = PhotonNetwork.Instantiate("PhotonPrefabs/Shell", m_FireTransform.position, Quaternion.LookRotation(turret.transform.forward));
+        bullet.GetComponent<Rigidbody>().AddForce(turret.transform.forward * m_CurrentLaunchForce, ForceMode.Impulse);
 
         //Rigidbody shellInstance = Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
