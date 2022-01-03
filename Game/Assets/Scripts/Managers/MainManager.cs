@@ -9,6 +9,8 @@ public class MainManager : MonoBehaviourPunCallbacks
 {
     public static MainManager instance;
 
+    public int winner = 0;
+
     private void Awake()
     {
         if (instance)

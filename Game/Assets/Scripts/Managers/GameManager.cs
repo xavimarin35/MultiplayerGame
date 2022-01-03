@@ -27,10 +27,25 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     // Fins aquí ------------------------------------------------------------------------------------
 
+
+    int winner = 0;
+    bool roundstarted = false;
+    bool roundwin = false;
+    bool win = false;
+    bool change_sceen = false;
+
     public static GameManager Instance;
 
     public int PlayersRemaining = 0;
     [SerializeField] public bool[] players_alive = { false, false, false, false };
+
+    [SerializeField] bool CountDown = true;
+    double StartTime = 0;
+    double WinTime = 0;
+
+    GameObject PlayersIcon;
+    Text PlayersText;
+    GameObject CD_Text;
 
     public void Awake()
     {
@@ -39,6 +54,10 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     private void Start()
     {
+        StartTime = PhotonNetwork.Time;
+
+        CD_Text = GameObject.Find("Countdown");
+
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
@@ -53,162 +72,101 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         //StartCoroutine(GameLoop());
     }
 
-    // En principi es pot borrar perquè el follow camera ja funciona (WIP)
-    private void SetCameraTargets()
-    {
-        Transform[] targets = new Transform[m_Tanks.Length];
 
-        for (int i = 0; i < targets.Length; i++)
+    void Update()
+    {
+        double time = PhotonNetwork.Time - StartTime;
+
+        // Countdown Text
+        if (CountDown)
         {
-            targets[i] = m_Tanks[i].m_Instance.transform;
+            if (time > 1 && time < 2)
+            {
+                CD_Text.GetComponent<Text>().text = "3";
+                //if (!audioplaying)
+                //{
+                //    audioplaying = true;
+                //    CountdownAudioSource.PlayOneShot(CountdownAudioSource.clip);
+                //}
+            }
+
+            else if (time > 2 && time < 3)
+                CD_Text.GetComponent<Text>().text = "2";
+            else if (time > 3 && time < 4)
+                CD_Text.GetComponent<Text>().text = "1";
+            else if (time > 4 && time < 4.5)
+                CD_Text.GetComponent<Text>().text = "GO!";
+            else if (time > 4.5)
+            {
+                CountDown = false;
+                CD_Text.GetComponent<Text>().enabled = false;
+                //if (!musicplaying)
+                //{
+                //    musicplaying = true;
+                //    Music.PlayOneShot(Music.clip);
+                //}
+            }
         }
 
-        m_CameraControl.m_Targets = targets;
-    }
+        //if (PlayersText.text != PlayersRemaining.ToString())
+        //    PlayersText.text = PlayersRemaining.ToString();
 
-    // Tot això s'haurà de borrar o refer perquè el game loop ara és diferent
-    private IEnumerator GameLoop()
-    {
-        yield return StartCoroutine(RoundStarting());
-        yield return StartCoroutine(RoundPlaying());
-        yield return StartCoroutine(RoundEnding());
-
-        if (m_GameWinner != null)
+        if (PlayersRemaining == 1 && !win)
         {
-            Application.LoadLevel(Application.loadedLevel);
-        }
-        else
-        {
-            StartCoroutine(GameLoop());
-        }
-    }
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                if (players_alive[i])
+                {
+                    winner = i + 1;
+                    break;
+                }
+            }
 
-    private IEnumerator RoundStarting()
-    {
-        ResetAllTanks();
-        DisableTankControl();
+            // Show Winner Screen
+            //GameObject WinUI = GameObject.Find("WinScreen");
+            //WinUI.GetComponent<Image>().enabled = true;
+            //WinUI.GetComponentInChildren<Text>().enabled = true;
 
-        m_CameraControl.SetStartPositionAndSize();
-
-        m_RoundNumber++;
-        m_MessageText.text = "ROUND " + m_RoundNumber;
-
-        yield return m_StartWait;
-    }
-
-    private IEnumerator RoundPlaying()
-    {
-        EnableTankControl();
-
-        m_MessageText.text = "";
-
-        while (!OneTankLeft())
-        {
-            yield return null;
-        }
-    }
-
-    private IEnumerator RoundEnding()
-    {
-        DisableTankControl();
-
-        m_RoundWinner = null;
-
-        m_RoundWinner = GetRoundWinner();
-
-        if (m_RoundWinner != null)
-            m_RoundWinner.m_Wins++;
-
-        m_GameWinner = GetGameWinner();
-
-        string message = EndMessage();
-        m_MessageText.text = message;
-
-        yield return m_EndWait;
-    }
-
-    private bool OneTankLeft()
-    {
-        int numTanksLeft = 0;
-
-        for (int i = 0; i < m_Tanks.Length; i++)
-        {
-            if (m_Tanks[i].m_Instance.activeSelf)
-                numTanksLeft++;
+            //win = true;
+            //WinTime = PhotonNetwork.Time;
+            Debug.Log("tas quedao solo");
         }
 
-        return numTanksLeft <= 1;
-    }
-
-    private TankManager GetRoundWinner()
-    {
-        for (int i = 0; i < m_Tanks.Length; i++)
+        if (win)
         {
-            if (m_Tanks[i].m_Instance.activeSelf)
-                return m_Tanks[i];
+            GameObject room = GameObject.Find("RoomManager");
+            room.GetComponent<MainManager>().winner = winner;
+
+            if (PhotonNetwork.IsMasterClient /*&& all players accept rematch*/)
+            {
+                if (PhotonNetwork.Time - WinTime > 4 && !change_sceen)
+                {
+                    change_sceen = true;
+                    this.photonView.RPC("WinScreen", RpcTarget.All);
+                }
+
+            }
         }
 
-        return null;
     }
 
-    private TankManager GetGameWinner()
+    [PunRPC]
+    void WinScreen()
     {
-        for (int i = 0; i < m_Tanks.Length; i++)
-        {
-            if (m_Tanks[i].m_Wins == m_NumRoundsToWin)
-                return m_Tanks[i];
-        }
-
-        return null;
+        PhotonNetwork.LoadLevel("WinScreen");
     }
 
-    private string EndMessage()
+    public void OnPlayerDeath(int player_num)
     {
-        string message = "DRAW!";
-
-        if (m_RoundWinner != null)
-            message = m_RoundWinner.m_ColoredPlayerText + " WINS THE ROUND!";
-
-        message += "\n\n\n\n";
-
-        for (int i = 0; i < m_Tanks.Length; i++)
-        {
-            message += m_Tanks[i].m_ColoredPlayerText + ": " + m_Tanks[i].m_Wins + " WINS\n";
-        }
-
-        if (m_GameWinner != null)
-            message = m_GameWinner.m_ColoredPlayerText + " WINS THE GAME!";
-
-        return message;
+        this.photonView.RequestOwnership();
+        PlayersRemaining--;
+        players_alive[player_num - 1] = false;
     }
 
-    private void ResetAllTanks()
+    public int ReturnPlayersLeft()
     {
-        for (int i = 0; i < m_Tanks.Length; i++)
-        {
-            m_Tanks[i].Reset();
-        }
+        return PlayersRemaining;
     }
-
-
-    private void EnableTankControl()
-    {
-        for (int i = 0; i < m_Tanks.Length; i++)
-        {
-            m_Tanks[i].EnableControl();
-        }
-    }
-
-
-    private void DisableTankControl()
-    {
-        for (int i = 0; i < m_Tanks.Length; i++)
-        {
-            m_Tanks[i].DisableControl();
-        }
-    }
-
-    // Fins aquí ---------------------------------------------------------------------------
 
     public GameObject ReturnPlayerAlive()
     {
@@ -259,6 +217,30 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         }
 
         return tank;
+    }
+
+    public bool IsPlayerAlive(int actor_number)
+    {
+        return players_alive[actor_number - 1] == true;
+    }
+
+    public bool RoundStarted()
+    {
+        return roundstarted;
+    }
+
+    public bool RoundEnded()
+    {
+        return roundwin;
+    }
+    public bool GameStarted()
+    {
+        return !CountDown;
+    }
+
+    public bool GameEnded()
+    {
+        return win;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

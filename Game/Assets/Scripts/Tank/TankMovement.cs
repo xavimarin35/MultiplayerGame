@@ -27,6 +27,8 @@ public class TankMovement : MonoBehaviour
 
     private PhotonView myPV;
 
+    GameObject GM;
+
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
@@ -60,11 +62,17 @@ public class TankMovement : MonoBehaviour
 
     private void Update()
     {
-        if(myPV.IsMine)
+        if (GM == null)
+            GM = GameObject.Find("GameManager(Clone)");
+
+        if (myPV.IsMine)
         {
-            // Store the player's input and make sure the audio for the engine is playing.
-            m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
-            m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
+            if(GM.GetComponent<GameManager>().GameStarted())
+            {
+                // Store the player's input and make sure the audio for the engine is playing.
+                m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
+                m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
+            }
 
             EngineAudio();
         }
