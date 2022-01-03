@@ -49,8 +49,8 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
 
     public void TakeDamage(float amount)
     {
-        if (!PV.IsMine)
-            return;
+        //if (!PV.IsMine)
+        //    return;
 
         // Adjust the tank's current health, update the UI based on the new health and check whether or not the tank is dead.
 
