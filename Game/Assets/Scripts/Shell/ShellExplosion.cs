@@ -7,8 +7,8 @@ public class ShellExplosion : MonoBehaviour
     public AudioSource m_ExplosionAudio;              
     public float m_MaxDamage = 100f;                  
     public float m_ExplosionForce = 1000f;            
-    public float m_MaxLifeTime = 2f;                  
-    public float m_ExplosionRadius = 5f;              
+    public float m_MaxLifeTime = 2f;
+    public float m_ExplosionRadius = 5f;
 
 
     private void Start()
@@ -38,6 +38,11 @@ public class ShellExplosion : MonoBehaviour
 
             targetHealth.TakeDamage(damage);
         }
+
+        Vector3 positionWanted = gameObject.transform.position;
+        positionWanted.y += 0.75f;
+
+        m_ExplosionParticles.transform.position = positionWanted;
 
         m_ExplosionParticles.transform.parent = null;
 
