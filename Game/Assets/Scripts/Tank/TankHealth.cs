@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using Photon.Pun;
 
 public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
 {
     PhotonView PV;
+    Scene scene;
 
     public float m_StartingHealth = 100f;          
     public Slider m_Slider;                        
@@ -29,7 +31,7 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
 
         m_ExplosionParticles.gameObject.SetActive(false);
 
-        if (PV.IsMine)
+        if (PV.IsMine && scene.buildIndex == 1)
             Camera.main.GetComponent<FollowCamera>().target = gameObject.transform;
     }
 

@@ -69,7 +69,6 @@ public class GameManager : MonoBehaviourPun, IPunObservable
             players_alive[i] = true;
         }
 
-        //StartCoroutine(GameLoop());
     }
 
 
