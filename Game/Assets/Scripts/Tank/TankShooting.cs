@@ -26,6 +26,7 @@ public class TankShooting : MonoBehaviour
 
     protected Vector3 aimPoint;
     public GameObject turret;
+    public GameObject GM;
 
     private void OnEnable()
     {
@@ -64,34 +65,41 @@ public class TankShooting : MonoBehaviour
 
             m_AimSlider.value = m_MinLaunchForce;
 
-            // Max Charge, not fired
-            if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired && holding)
-            {
-                m_CurrentLaunchForce = m_MaxLaunchForce;
-                Fire();
-            }
-            // Pressed for the first time
-            else if (Input.GetMouseButtonDown(0))
-            {
-                m_Fired = false;
-                holding = true;
-                m_CurrentLaunchForce = m_MinLaunchForce;
+            if (GM == null)
+                GM = GameObject.Find("GameManager(Clone)");
 
-                m_ShootingAudio.clip = m_ChargingClip;
-                m_ShootingAudio.Play();
-            }
-            // Holding the fire
-            else if (!Input.GetMouseButtonUp(0) && holding && !m_Fired)
+            if (GM.GetComponent<GameManager>().GameStarted())
             {
-                m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+                // Max Charge, not fired
+                if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired && holding)
+                {
+                    m_CurrentLaunchForce = m_MaxLaunchForce;
+                    Fire();
+                }
+                // Pressed for the first time
+                else if (Input.GetMouseButtonDown(0))
+                {
+                    m_Fired = false;
+                    holding = true;
+                    m_CurrentLaunchForce = m_MinLaunchForce;
 
-                m_AimSlider.value = m_CurrentLaunchForce;
+                    m_ShootingAudio.clip = m_ChargingClip;
+                    m_ShootingAudio.Play();
+                }
+                // Holding the fire
+                else if (!Input.GetMouseButtonUp(0) && holding && !m_Fired)
+                {
+                    m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+
+                    m_AimSlider.value = m_CurrentLaunchForce;
+                }
+                // Release button
+                else if (Input.GetMouseButtonUp(0) && holding)
+                {
+                    Fire();
+                }
             }
-            // Release button
-            else if (Input.GetMouseButtonUp(0) && holding)
-            {
-                Fire();
-            }
+            
         }        
     }
 
@@ -104,7 +112,9 @@ public class TankShooting : MonoBehaviour
         m_Fired = true;
 
         GameObject bullet = PhotonNetwork.Instantiate("PhotonPrefabs/Shell", m_FireTransform.position, Quaternion.LookRotation(turret.transform.forward));
-        bullet.GetComponent<Rigidbody>().AddForce(turret.transform.forward * m_CurrentLaunchForce, ForceMode.Impulse);
+        Vector3 force = turret.transform.forward * m_CurrentLaunchForce;
+        force.y += 3.0f;
+        bullet.GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
 
         //Rigidbody shellInstance = Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
