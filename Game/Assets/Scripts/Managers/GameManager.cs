@@ -122,12 +122,12 @@ public class GameManager : MonoBehaviourPun, IPunObservable
             }
 
             // Show Winner Screen
-            //GameObject WinUI = GameObject.Find("WinScreen");
-            //WinUI.GetComponent<Image>().enabled = true;
-            //WinUI.GetComponentInChildren<Text>().enabled = true;
+            GameObject WinUI = GameObject.Find("Winner");
+            WinUI.GetComponent<Image>().enabled = true;
+            WinUI.GetComponentInChildren<Text>().enabled = true;
 
-            //win = true;
-            //WinTime = PhotonNetwork.Time;
+            win = true;
+            WinTime = PhotonNetwork.Time;
             Debug.Log("tas quedao solo");
         }
 
@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
                 if (PhotonNetwork.Time - WinTime > 4 && !change_sceen)
                 {
                     change_sceen = true;
-                    this.photonView.RPC("WinScreen", RpcTarget.All);
+                    this.photonView.RPC("Winner", RpcTarget.All);
                 }
 
             }
@@ -152,7 +152,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     [PunRPC]
     void WinScreen()
     {
-        PhotonNetwork.LoadLevel("WinScreen");
+        PhotonNetwork.LoadLevel("Winnner");
     }
 
     public void OnPlayerDeath(int player_num)
