@@ -45,7 +45,7 @@ public class MainManager : MonoBehaviourPunCallbacks
         }
         else if (scene.buildIndex == 2)
         {
-            PhotonNetwork.InstantiateRoomObject("PhotonPrefabs/WinnerManager", Vector3.zero, Quaternion.identity);
+            PhotonNetwork.Instantiate("PhotonPrefabs/WinnerManager", Vector3.zero, Quaternion.identity);
         }
     }
 }

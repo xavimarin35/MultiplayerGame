@@ -7,6 +7,7 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
 {
     PhotonView PV;
     Scene scene;
+    GameObject GM;
 
     public float m_StartingHealth = 100f;          
     public Slider m_Slider;                        
@@ -47,6 +48,12 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
 
         SetHealthUI();
     }
+
+    void Update()
+    {
+        if (GM == null)
+            GM = GameObject.Find("GameManager(Clone)");
+    }
     
 
     public void TakeDamage(float amount)
@@ -78,8 +85,31 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
     private void OnDeath()
     {
         // Play the effects for the death of the tank and deactivate it.
-
         m_Dead = true;
+
+        if (GM.GetComponent<GameManager>().ReturnPlayersLeft() > 2) //TODO: Here goes a 2, set to 1 for tests 
+        {
+            //PopUp kill
+            GameObject popup = GameObject.Find("PopUpKill");
+            popup.GetComponent<Image>().enabled = true;
+            popup.GetComponentInChildren<Text>().enabled = true;
+            popup.GetComponentInChildren<Text>().text = "You were killed by " + name;
+
+            ////show spectate button
+            //GameObject spectate = GameObject.Find("Spectate");
+            //spectate.GetComponent<Image>().enabled = true;
+            //spectate.GetComponent<Button>().enabled = true;
+            //spectate.GetComponentInChildren<Text>().enabled = true;
+
+            ////show exit button
+            //GameObject exit = GameObject.Find("Exit");
+            //exit.GetComponent<Image>().enabled = true;
+            //exit.GetComponent<Button>().enabled = true;
+            //exit.GetComponentInChildren<Text>().enabled = true;
+        }
+
+        //Notify game manager you died
+        GM.GetComponent<GameManager>().OnPlayerDeath(PhotonNetwork.LocalPlayer.ActorNumber);
 
         m_ExplosionParticles.transform.position = transform.position;
         m_ExplosionParticles.gameObject.SetActive(true);

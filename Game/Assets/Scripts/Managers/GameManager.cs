@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
         if (PlayersRemaining == 1 && !win)
         {
-            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++) // select winner
             {
                 if (players_alive[i])
                 {
@@ -122,18 +122,18 @@ public class GameManager : MonoBehaviourPun, IPunObservable
             }
 
             // Show Winner Screen
-            GameObject WinUI = GameObject.Find("Winner");
-            WinUI.GetComponent<Image>().enabled = true;
+            GameObject WinUI = GameObject.Find("WinScreen");
+            //WinUI.GetComponent<Image>().enabled = true;
             WinUI.GetComponentInChildren<Text>().enabled = true;
 
             win = true;
             WinTime = PhotonNetwork.Time;
-            Debug.Log("tas quedao solo");
+            Debug.Log("Players Remaining: " + PlayersRemaining);
         }
 
         if (win)
         {
-            GameObject room = GameObject.Find("RoomManager");
+            GameObject room = GameObject.Find("MainManager");
             room.GetComponent<MainManager>().winner = winner;
 
             if (PhotonNetwork.IsMasterClient /*&& all players accept rematch*/)
@@ -141,18 +141,21 @@ public class GameManager : MonoBehaviourPun, IPunObservable
                 if (PhotonNetwork.Time - WinTime > 4 && !change_sceen)
                 {
                     change_sceen = true;
-                    this.photonView.RPC("Winner", RpcTarget.All);
+                    this.photonView.RPC("WinScreen", RpcTarget.All);
                 }
 
             }
         }
+
+        Debug.Log("Players Remaining: " + PlayersRemaining);
+        Debug.Log("Win: " + win);
 
     }
 
     [PunRPC]
     void WinScreen()
     {
-        PhotonNetwork.LoadLevel("Winnner");
+        PhotonNetwork.LoadLevel("WinScreen");
     }
 
     public void OnPlayerDeath(int player_num)
