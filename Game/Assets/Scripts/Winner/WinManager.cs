@@ -36,21 +36,21 @@ public class WinManager : MonoBehaviourPun, IPunObservable
             RoomPlayers[i] = true;
         }
 
-        GameObject room = GameObject.Find("RoomManager");
+        GameObject room = GameObject.Find("MainManager");
         winner = room.GetComponent<MainManager>().winner;
         winner_name = PhotonNetwork.CurrentRoom.GetPlayer(winner).NickName;
 
-        GameObject text_name = GameObject.Find("Name");
-        text_name.GetComponent<Text>().text = winner_name;
+        //GameObject text_name = GameObject.Find("Name");
+        //text_name.GetComponent<Text>().text = winner_name;
 
-        GameObject accpt_name = GameObject.Find("AcceptedPlayers");
-        accepted_players = accpt_name.GetComponent<Text>();
+        //GameObject accpt_name = GameObject.Find("AcceptedPlayers");
+        //accepted_players = accpt_name.GetComponent<Text>();
 
         GameObject tank = GetWinnerTank(winner);
         GameObject spawnpoint = GameObject.Find("SpawnPoint");
         //Vector3 pos = Vector3.zero;
         //pos.x = 0.58f;
-        //pos.y = 1.8f;
+        //pos.y = 0.5f;
         //pos.z = -31.26f;
 
         tank.transform.position = spawnpoint.transform.position; // if it doesnt work, just change 'spawnpoint.trasnform.position' for 'pos' variable
@@ -74,14 +74,16 @@ public class WinManager : MonoBehaviourPun, IPunObservable
             Players_connected = PhotonNetwork.PlayerList.Length;
         }
 
+        Debug.Log("Winner: " + winner_name);
+
         int a = RematchAcceptedNum();
-        if (a > 0)
-        {
-            accepted_players.enabled = true;
-            accepted_players.text = a.ToString() + "/" + Players_connected;
-        }
-        else
-            accepted_players.enabled = false;
+        //if (a > 0)
+        //{
+        //    accepted_players.enabled = true;
+        //    accepted_players.text = a.ToString() + "/" + Players_connected;
+        //}
+        //else
+        //    accepted_players.enabled = false;
 
 
         if (AllPlayersRematch() && PhotonNetwork.IsMasterClient && !loading && Players_connected > 1)
