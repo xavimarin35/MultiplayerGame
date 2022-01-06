@@ -40,11 +40,11 @@ public class WinManager : MonoBehaviourPun, IPunObservable
         winner = room.GetComponent<MainManager>().winner;
         winner_name = PhotonNetwork.CurrentRoom.GetPlayer(winner).NickName;
 
-        //GameObject text_name = GameObject.Find("Name");
-        //text_name.GetComponent<Text>().text = winner_name;
+        GameObject text_name = GameObject.Find("WinnerName");
+        text_name.GetComponent<Text>().text = winner_name;
 
-        //GameObject accpt_name = GameObject.Find("AcceptedPlayers");
-        //accepted_players = accpt_name.GetComponent<Text>();
+        GameObject accpt_name = GameObject.Find("AcceptedPlayers");
+        accepted_players = accpt_name.GetComponent<Text>();
 
         GameObject tank = GetWinnerTank(winner);
         GameObject spawnpoint = GameObject.Find("SpawnPoint");
@@ -73,20 +73,20 @@ public class WinManager : MonoBehaviourPun, IPunObservable
         }
 
         int a = RematchAcceptedNum();
-        //if (a > 0)
-        //{
-        //    accepted_players.enabled = true;
-        //    accepted_players.text = a.ToString() + "/" + Players_connected;
-        //}
-        //else
-        //    accepted_players.enabled = false;
+        if (a > 0)
+        {
+            accepted_players.enabled = true;
+            accepted_players.text = "Players: " + a.ToString() + "/" + Players_connected;
+        }
+        else
+            accepted_players.enabled = false;
 
 
-        //if (AllPlayersRematch() && PhotonNetwork.IsMasterClient && !loading && Players_connected > 1)
-        //{
-        //    loading = true;
-        //    this.photonView.RPC("Rematch", RpcTarget.All);
-        //}
+        if (AllPlayersRematch() && PhotonNetwork.IsMasterClient && !loading/* && Players_connected > 1*/) //We could skip last condition (discuss it with Pol)
+        {
+            loading = true;
+            this.photonView.RPC("Rematch", RpcTarget.All);
+        }
     }
 
     [PunRPC]
@@ -117,7 +117,7 @@ public class WinManager : MonoBehaviourPun, IPunObservable
         return tank;
     }
 
-     bool AllPlayersRematch()
+    bool AllPlayersRematch()
     {
         bool ret = true;
 
