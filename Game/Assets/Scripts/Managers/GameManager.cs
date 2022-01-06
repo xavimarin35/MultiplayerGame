@@ -172,54 +172,46 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     public GameObject ReturnPlayerAlive()
     {
-        GameObject player = null;
+        GameObject player;
         int actor_num = -1;
 
         for(int i = 0; i < PlayersRemaining; i++)
         {
             if (players_alive[i] == true)
-            {
                 actor_num = i + 1;
-
-                player = FindTank(actor_num);
-
-                if (player != null)
-                {
-                    if (player.GetComponent<PhotonView>().IsMine)
-                        return player;
-                }
-            }
         }
+
+        player = PhotonNetwork.CurrentRoom.GetPlayer(actor_num).TagObject as GameObject;
 
         return player;
     }
 
-    private GameObject FindTank(int actor)
-    {
-        GameObject tank = null;
+    //private GameObject FindTank(int actor)
+    //{
+    //    GameObject tank = null;
 
-        switch(actor)
-        {
-            case 1:
-                tank = GameObject.Find("TankBlue(Clone)");
-                break;
-            case 2:
-                tank = GameObject.Find("TankRed(Clone)");
-                break;
-            case 3:
-                tank = GameObject.Find("TankYellow(Clone)");
-                break;
-            case 4:
-                tank = GameObject.Find("TankGreen(Clone)");
-                break;
+    //    switch(actor)
+    //    {
+    //        case 1:
+    //            tank = GameObject.Find("TankBlue(Clone)");
+    //            break;
+    //        case 2:
+    //            tank = GameObject.Find("TankRed(Clone)");
+    //            break;
+    //        case 3:
+    //            tank = GameObject.Find("TankYellow(Clone)");
+    //            break;
+    //        case 4:
+    //            tank = GameObject.Find("TankGreen(Clone)");
+    //            break;
 
-            default:
-                tank = GameObject.Find("TankBlue(Clone)");
-                break;
-        }
+    //        default:
+    //            tank = GameObject.Find("TankBlue(Clone)");
+    //            break;
+    //    }
 
-        return tank;
-    }
+    //    return tank;
+    //}
 
     public bool IsPlayerAlive(int actor_number)
     {

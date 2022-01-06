@@ -48,12 +48,8 @@ public class WinManager : MonoBehaviourPun, IPunObservable
 
         GameObject tank = GetWinnerTank(winner);
         GameObject spawnpoint = GameObject.Find("SpawnPoint");
-        //Vector3 pos = Vector3.zero;
-        //pos.x = 0.58f;
-        //pos.y = 1.8f;
-        //pos.z = -31.26f;
 
-        tank.transform.position = spawnpoint.transform.position; // if it doesnt work, just change 'spawnpoint.trasnform.position' for 'pos' variable
+        tank.transform.position = spawnpoint.transform.position;
         tank.transform.rotation = spawnpoint.transform.rotation;
         tank.transform.localScale = spawnpoint.transform.localScale;
     }
