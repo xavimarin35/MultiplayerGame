@@ -27,9 +27,9 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     // Fins aquí ------------------------------------------------------------------------------------
 
+    public string winnerStr = ""; // Which tank
+    public string winnerName = ""; // Player name
 
-    public int winner = 0;
-    public string winnerStr = "";
     bool roundstarted = false;
     bool roundwin = false;
     bool win = false;
@@ -116,16 +116,8 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
         if (PlayersRemaining == 1 && !win)
         {
-            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++) // select winner
-            {
-                if (players_alive[i])
-                {
-                    winner = i + 1;
-                    break;
-                }
-            }
-
             winnerStr = GetWinner();
+            winnerName = GetWinner(winnerStr);
 
             // Show Winner Screen
             GameObject WinUI = GameObject.Find("WinScreen");
@@ -141,8 +133,8 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         {
             //GameTimer.instance.timerActive = false;
             GameObject room = GameObject.Find("MainManager");
-            room.GetComponent<MainManager>().winner = winner;
             room.GetComponent<MainManager>().winnerStr = winnerStr;
+            room.GetComponent<MainManager>().winnerName = winnerName;
 
             if (PhotonNetwork.IsMasterClient /*&& all players accept rematch*/)
             {
@@ -188,6 +180,17 @@ public class GameManager : MonoBehaviourPun, IPunObservable
                     name = "TankGreen";
             }
         }
+
+        return name;
+    }
+
+    public string GetWinner(string tank)
+    {
+        string name = " ";
+
+        GameObject winner = GameObject.Find(tank + "(Clone)");
+
+        name = winner.GetComponent<PhotonView>().Owner.NickName;
 
         return name;
     }

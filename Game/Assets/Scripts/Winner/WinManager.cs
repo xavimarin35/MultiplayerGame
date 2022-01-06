@@ -36,15 +36,14 @@ public class WinManager : MonoBehaviourPun, IPunObservable
             RoomPlayers[i] = true;
         }
 
-
-
         GameObject room = GameObject.Find("MainManager");
-        //winner = room.GetComponent<MainManager>().winner;
 
         //winner_name = PhotonNetwork.CurrentRoom.GetPlayer(winner).NickName;
 
-        //GameObject text_name = GameObject.Find("WinnerName");
-        //text_name.GetComponent<Text>().text = winner_name;
+        string name = room.GetComponent<MainManager>().winnerName.ToUpper();
+
+        GameObject text_name = GameObject.Find("WinnerName");
+        text_name.GetComponent<Text>().text = name;
 
         GameObject accpt_name = GameObject.Find("AcceptedPlayers");
         accepted_players = accpt_name.GetComponent<Text>();

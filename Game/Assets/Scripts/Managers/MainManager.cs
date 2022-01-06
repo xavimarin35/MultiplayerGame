@@ -8,9 +8,8 @@ using Photon.Pun;
 public class MainManager : MonoBehaviourPunCallbacks
 {
     public static MainManager instance;
-
-    public int winner = 0;
     public string winnerStr = " ";
+    public string winnerName = " ";
 
     private void Awake()
     {
