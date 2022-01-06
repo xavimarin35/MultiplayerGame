@@ -36,15 +36,15 @@ public class WinManager : MonoBehaviourPun, IPunObservable
             RoomPlayers[i] = true;
         }
 
-        GameObject room = GameObject.Find("RoomManager");
+        GameObject room = GameObject.Find("MainManager");
         winner = room.GetComponent<MainManager>().winner;
         winner_name = PhotonNetwork.CurrentRoom.GetPlayer(winner).NickName;
 
-        GameObject text_name = GameObject.Find("Name");
-        text_name.GetComponent<Text>().text = winner_name;
+        //GameObject text_name = GameObject.Find("Name");
+        //text_name.GetComponent<Text>().text = winner_name;
 
-        GameObject accpt_name = GameObject.Find("AcceptedPlayers");
-        accepted_players = accpt_name.GetComponent<Text>();
+        //GameObject accpt_name = GameObject.Find("AcceptedPlayers");
+        //accepted_players = accpt_name.GetComponent<Text>();
 
         GameObject tank = GetWinnerTank(winner);
         GameObject spawnpoint = GameObject.Find("SpawnPoint");
@@ -54,6 +54,8 @@ public class WinManager : MonoBehaviourPun, IPunObservable
         //pos.z = -31.26f;
 
         tank.transform.position = spawnpoint.transform.position; // if it doesnt work, just change 'spawnpoint.trasnform.position' for 'pos' variable
+        tank.transform.rotation = spawnpoint.transform.rotation;
+        tank.transform.localScale = spawnpoint.transform.localScale;
     }
 
     // Update is called once per frame
@@ -75,20 +77,20 @@ public class WinManager : MonoBehaviourPun, IPunObservable
         }
 
         int a = RematchAcceptedNum();
-        if (a > 0)
-        {
-            accepted_players.enabled = true;
-            accepted_players.text = a.ToString() + "/" + Players_connected;
-        }
-        else
-            accepted_players.enabled = false;
+        //if (a > 0)
+        //{
+        //    accepted_players.enabled = true;
+        //    accepted_players.text = a.ToString() + "/" + Players_connected;
+        //}
+        //else
+        //    accepted_players.enabled = false;
 
 
-        if (AllPlayersRematch() && PhotonNetwork.IsMasterClient && !loading && Players_connected > 1)
-        {
-            loading = true;
-            this.photonView.RPC("Rematch", RpcTarget.All);
-        }
+        //if (AllPlayersRematch() && PhotonNetwork.IsMasterClient && !loading && Players_connected > 1)
+        //{
+        //    loading = true;
+        //    this.photonView.RPC("Rematch", RpcTarget.All);
+        //}
     }
 
     [PunRPC]
@@ -99,7 +101,7 @@ public class WinManager : MonoBehaviourPun, IPunObservable
 
     GameObject GetWinnerTank(int num)
     {
-        GameObject tank = GameObject.Find("TankBlue"); ;
+        GameObject tank = GameObject.Find("TankBlue");
         switch (num)
         {
             case 1:

@@ -147,8 +147,8 @@ public class GameManager : MonoBehaviourPun, IPunObservable
             }
         }
 
-        Debug.Log("Players Remaining: " + PlayersRemaining);
-        Debug.Log("Win: " + win);
+        //Debug.Log("Players Remaining: " + PlayersRemaining);
+        //Debug.Log("Win: " + win);
 
     }
 
