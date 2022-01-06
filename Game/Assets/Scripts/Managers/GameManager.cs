@@ -159,25 +159,33 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     }
 
-    private string GetWinner()
+    public string GetWinner()
     {
-        string name = "";
+        string name = " ";
+        GameObject lastPlayer = null;
 
-        if(GameObject.Find("BlueTank(Clone").activeInHierarchy == true)
-        {
+        lastPlayer = GameObject.Find("TankBlue(Clone)");
+
+        if (lastPlayer != null && lastPlayer.activeSelf)
             name = "BlueTank";
-        }
-        else if(GameObject.Find("RedTank(Clone").activeInHierarchy == true)
+
+        else
         {
-            name = "RedTank";
-        }
-        else if (GameObject.Find("GreenTank(Clone").activeInHierarchy == true)
-        {
-            name = "GreenTank";
-        }
-        else if (GameObject.Find("YellowTank(Clone").activeInHierarchy == true)
-        {
-            name = "YellowTank";
+            lastPlayer = GameObject.Find("TankRed(Clone)");
+
+            if (lastPlayer != null && lastPlayer.activeSelf)
+                name = "RedTank";
+
+            else
+            {
+                lastPlayer = GameObject.Find("TankYellow(Clone)");
+
+                if (lastPlayer != null && lastPlayer.activeSelf)
+                    name = "YellowTank";
+
+                else
+                    name = "GreenTank";
+            }
         }
 
         return name;
