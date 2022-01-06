@@ -28,7 +28,8 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     // Fins aquí ------------------------------------------------------------------------------------
 
 
-    int winner = 0;
+    public int winner = 0;
+    public string winnerStr = "";
     bool roundstarted = false;
     bool roundwin = false;
     bool win = false;
@@ -124,6 +125,8 @@ public class GameManager : MonoBehaviourPun, IPunObservable
                 }
             }
 
+            winnerStr = GetWinner();
+
             // Show Winner Screen
             GameObject WinUI = GameObject.Find("WinScreen");
             //WinUI.GetComponent<Image>().enabled = true;
@@ -156,6 +159,30 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     }
 
+    private string GetWinner()
+    {
+        string name = "";
+
+        if(GameObject.Find("BlueTank(Clone").activeInHierarchy == true)
+        {
+            name = "BlueTank";
+        }
+        else if(GameObject.Find("RedTank(Clone").activeInHierarchy == true)
+        {
+            name = "RedTank";
+        }
+        else if (GameObject.Find("GreenTank(Clone").activeInHierarchy == true)
+        {
+            name = "GreenTank";
+        }
+        else if (GameObject.Find("YellowTank(Clone").activeInHierarchy == true)
+        {
+            name = "YellowTank";
+        }
+
+        return name;
+    }
+
     [PunRPC]
     void WinScreen()
     {
@@ -176,46 +203,54 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     public GameObject ReturnPlayerAlive()
     {
-        GameObject player;
+        GameObject player = null;
         int actor_num = -1;
 
-        for(int i = 0; i < PlayersRemaining; i++)
+        for (int i = 0; i < PlayersRemaining; i++)
         {
             if (players_alive[i] == true)
+            {
                 actor_num = i + 1;
-        }
 
-        player = PhotonNetwork.CurrentRoom.GetPlayer(actor_num).TagObject as GameObject;
+                player = FindTank(actor_num);
+
+                if (player != null)
+                {
+                    if (player.GetComponent<PhotonView>().IsMine)
+                        return player;
+                }
+            }
+        }
 
         return player;
     }
 
-    //private GameObject FindTank(int actor)
-    //{
-    //    GameObject tank = null;
+    private GameObject FindTank(int actor)
+    {
+        GameObject tank = null;
 
-    //    switch(actor)
-    //    {
-    //        case 1:
-    //            tank = GameObject.Find("TankBlue(Clone)");
-    //            break;
-    //        case 2:
-    //            tank = GameObject.Find("TankRed(Clone)");
-    //            break;
-    //        case 3:
-    //            tank = GameObject.Find("TankYellow(Clone)");
-    //            break;
-    //        case 4:
-    //            tank = GameObject.Find("TankGreen(Clone)");
-    //            break;
+        switch (actor)
+        {
+            case 1:
+                tank = GameObject.Find("TankBlue(Clone)");
+                break;
+            case 2:
+                tank = GameObject.Find("TankRed(Clone)");
+                break;
+            case 3:
+                tank = GameObject.Find("TankYellow(Clone)");
+                break;
+            case 4:
+                tank = GameObject.Find("TankGreen(Clone)");
+                break;
 
-    //        default:
-    //            tank = GameObject.Find("TankBlue(Clone)");
-    //            break;
-    //    }
+            default:
+                tank = GameObject.Find("TankBlue(Clone)");
+                break;
+        }
 
-    //    return tank;
-    //}
+        return tank;
+    }
 
     public bool IsPlayerAlive(int actor_number)
     {

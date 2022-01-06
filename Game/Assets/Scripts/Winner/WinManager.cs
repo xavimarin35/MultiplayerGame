@@ -38,6 +38,7 @@ public class WinManager : MonoBehaviourPun, IPunObservable
 
         GameObject room = GameObject.Find("MainManager");
         winner = room.GetComponent<MainManager>().winner;
+
         winner_name = PhotonNetwork.CurrentRoom.GetPlayer(winner).NickName;
 
         GameObject text_name = GameObject.Find("WinnerName");
