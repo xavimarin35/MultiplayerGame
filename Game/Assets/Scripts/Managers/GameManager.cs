@@ -142,6 +142,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
             //GameTimer.instance.timerActive = false;
             GameObject room = GameObject.Find("MainManager");
             room.GetComponent<MainManager>().winner = winner;
+            room.GetComponent<MainManager>().winnerStr = winnerStr;
 
             if (PhotonNetwork.IsMasterClient /*&& all players accept rematch*/)
             {

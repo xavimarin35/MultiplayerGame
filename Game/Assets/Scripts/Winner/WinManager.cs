@@ -36,9 +36,9 @@ public class WinManager : MonoBehaviourPun, IPunObservable
             RoomPlayers[i] = true;
         }
 
-        GameObject GM = GameObject.Find("GameManager(Clone)");
 
-        //GameObject room = GameObject.Find("MainManager");
+
+        GameObject room = GameObject.Find("MainManager");
         //winner = room.GetComponent<MainManager>().winner;
 
         //winner_name = PhotonNetwork.CurrentRoom.GetPlayer(winner).NickName;
@@ -49,7 +49,7 @@ public class WinManager : MonoBehaviourPun, IPunObservable
         GameObject accpt_name = GameObject.Find("AcceptedPlayers");
         accepted_players = accpt_name.GetComponent<Text>();
 
-        GameObject tank = GetWinnerTank(GM.GetComponent<GameManager>().winnerStr);
+        GameObject tank = GetWinnerTank(room.GetComponent<MainManager>().winnerStr);
 
         GameObject spawnpoint = GameObject.Find("SpawnPoint");
 
