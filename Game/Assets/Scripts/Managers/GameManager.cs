@@ -167,24 +167,24 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         lastPlayer = GameObject.Find("TankBlue(Clone)");
 
         if (lastPlayer != null && lastPlayer.activeSelf)
-            name = "BlueTank";
+            name = "TankBlue";
 
         else
         {
             lastPlayer = GameObject.Find("TankRed(Clone)");
 
             if (lastPlayer != null && lastPlayer.activeSelf)
-                name = "RedTank";
+                name = "TankRed";
 
             else
             {
                 lastPlayer = GameObject.Find("TankYellow(Clone)");
 
                 if (lastPlayer != null && lastPlayer.activeSelf)
-                    name = "YellowTank";
+                    name = "TankYellow";
 
                 else
-                    name = "GreenTank";
+                    name = "TankGreen";
             }
         }
 

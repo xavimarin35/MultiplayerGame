@@ -36,18 +36,21 @@ public class WinManager : MonoBehaviourPun, IPunObservable
             RoomPlayers[i] = true;
         }
 
-        GameObject room = GameObject.Find("MainManager");
-        winner = room.GetComponent<MainManager>().winner;
+        GameObject GM = GameObject.Find("GameManager(Clone)");
 
-        winner_name = PhotonNetwork.CurrentRoom.GetPlayer(winner).NickName;
+        //GameObject room = GameObject.Find("MainManager");
+        //winner = room.GetComponent<MainManager>().winner;
 
-        GameObject text_name = GameObject.Find("WinnerName");
-        text_name.GetComponent<Text>().text = winner_name;
+        //winner_name = PhotonNetwork.CurrentRoom.GetPlayer(winner).NickName;
+
+        //GameObject text_name = GameObject.Find("WinnerName");
+        //text_name.GetComponent<Text>().text = winner_name;
 
         GameObject accpt_name = GameObject.Find("AcceptedPlayers");
         accepted_players = accpt_name.GetComponent<Text>();
 
-        GameObject tank = GetWinnerTank(winner);
+        GameObject tank = GetWinnerTank(GM.GetComponent<GameManager>().winnerStr);
+
         GameObject spawnpoint = GameObject.Find("SpawnPoint");
 
         tank.transform.position = spawnpoint.transform.position;
@@ -94,6 +97,13 @@ public class WinManager : MonoBehaviourPun, IPunObservable
     void Rematch()
     {
         PhotonNetwork.LoadLevel("Main"); //restart the game
+    }
+
+    GameObject GetWinnerTank(string name)
+    {
+        GameObject tank = GameObject.Find(name);
+
+        return tank;
     }
 
     GameObject GetWinnerTank(int num)
