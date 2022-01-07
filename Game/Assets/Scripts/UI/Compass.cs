@@ -20,25 +20,31 @@ public class Compass : MonoBehaviour
     public TankMarker yellow;
     public TankMarker green;
 
+    bool blueAdded = false;
+    bool redAdded = false;
+    bool yellowAdded = false;
+    bool greenAdded = false;
+
+    public bool allMarkers = false;
+
     private void Awake()
     {
         actornum = PhotonNetwork.LocalPlayer.ActorNumber;
-        compassUnit = compassImage.rectTransform.rect.width / 360f;
-
-        AddTankMarker(blue);
-        AddTankMarker(red);
-        AddTankMarker(yellow);
-        AddTankMarker(green);
+        compassUnit = compassImage.rectTransform.rect.width / 360f;        
     }
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (!allMarkers)
+            AddMarkers();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!allMarkers)
+            AddMarkers();
+
         compassImage.uvRect = new Rect(player.transform.localEulerAngles.y / 360f, 0f, 1f, 1f);
 
         foreach (TankMarker marker in tankMarkers)
@@ -64,5 +70,34 @@ public class Compass : MonoBehaviour
         float angle = Vector2.SignedAngle(marker.position - playerPos, playerFwd);
 
         return new Vector2(compassUnit * angle, 0f);
+    }
+
+    private void AddMarkers()
+    {
+        if (blue && !blueAdded)
+        {
+            AddTankMarker(blue);
+            blueAdded = true;
+        }
+
+        if (red && !redAdded)
+        {
+            AddTankMarker(red);
+            redAdded = true;
+        }
+
+        if (yellow && !yellowAdded)
+        {
+            AddTankMarker(yellow);
+            yellowAdded = true;
+        }
+
+        if (green && !greenAdded)
+        {
+            AddTankMarker(green);
+            greenAdded = true;
+        }
+
+        if (blueAdded && redAdded && yellowAdded && greenAdded) allMarkers = true;
     }
 }

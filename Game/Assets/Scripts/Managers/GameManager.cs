@@ -74,11 +74,15 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         {
             players_alive[i] = true;
         }
+
+        if (!compass.GetComponent<Compass>().allMarkers)
+            AssignCompass();
     }
 
     void Update()
     {
-        AssignCompass();        
+        if (!compass.GetComponent<Compass>().allMarkers)
+            AssignCompass();
 
         double time = PhotonNetwork.Time - StartTime;
 
