@@ -158,34 +158,27 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     private void AssignCompass()
     {
-        GameObject marker = null;
-        if (!compass.GetComponent<Compass>().blue)
-        {
-            marker = GameObject.Find("TankBlue(Clone)");
-            if (marker != null)
-                compass.GetComponent<Compass>().blue = marker.GetComponent<TankMarker>();
-        }
+        GameObject bluemarker = null;
+        GameObject redmarker = null;
+        GameObject yellowmarker = null;
+        GameObject greenmarker = null;
 
-        if (!compass.GetComponent<Compass>().red)
-        {
-            marker = GameObject.Find("TankRed(Clone)");
-            if (marker != null)
-                compass.GetComponent<Compass>().red = marker.GetComponent<TankMarker>();
-        }
+        bluemarker = GameObject.Find("TankBlue(Clone)");
+        if (bluemarker != null)
+            compass.GetComponent<Compass>().blue = bluemarker.GetComponent<TankMarker>();
 
-        if (!compass.GetComponent<Compass>().yellow)
-        {
-            marker = GameObject.Find("TankYellow(Clone)");
-            if (marker != null)
-                compass.GetComponent<Compass>().yellow = marker.GetComponent<TankMarker>();
-        }
+        redmarker = GameObject.Find("TankRed(Clone)");
+        if (redmarker != null)
+            compass.GetComponent<Compass>().red = redmarker.GetComponent<TankMarker>();
 
-        if (!compass.GetComponent<Compass>().green)
-        {
-            marker = GameObject.Find("TankGreen(Clone)");
-            if (marker != null)
-                compass.GetComponent<Compass>().green = marker.GetComponent<TankMarker>();
-        }
+        yellowmarker = GameObject.Find("TankYellow(Clone)");
+        if (yellowmarker != null)
+            compass.GetComponent<Compass>().yellow = yellowmarker.GetComponent<TankMarker>();
+
+        greenmarker = GameObject.Find("TankGreen(Clone)");
+        if (greenmarker != null)
+            compass.GetComponent<Compass>().green = greenmarker.GetComponent<TankMarker>();
+
     }
 
     public string GetWinner()
