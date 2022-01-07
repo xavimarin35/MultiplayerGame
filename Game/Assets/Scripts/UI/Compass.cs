@@ -15,23 +15,25 @@ public class Compass : MonoBehaviour
 
     float compassUnit;
 
-    public TankMarker one;
-    public TankMarker two;
-
-    PhotonView PV;
+    public TankMarker blue;
+    public TankMarker red;
+    public TankMarker yellow;
+    public TankMarker green;
 
     private void Awake()
     {
         actornum = PhotonNetwork.LocalPlayer.ActorNumber;
         compassUnit = compassImage.rectTransform.rect.width / 360f;
 
-        AddTankMarker(one);
-        AddTankMarker(two);
+        AddTankMarker(blue);
+        AddTankMarker(red);
+        AddTankMarker(yellow);
+        AddTankMarker(green);
     }
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
@@ -63,6 +65,4 @@ public class Compass : MonoBehaviour
 
         return new Vector2(compassUnit * angle, 0f);
     }
-
-
 }

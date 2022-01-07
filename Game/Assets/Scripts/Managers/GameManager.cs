@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     double StartTime = 0;
     double WinTime = 0;
 
+    GameObject compass;
     GameObject PlayersIcon;
     Text PlayersText;
     GameObject CD_Text;
@@ -66,19 +67,19 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         // How many players are there in the room
         PlayersRemaining = PhotonNetwork.PlayerList.Length;
 
-        GameObject compass = GameObject.Find("Compass");
+        compass = GameObject.Find("Compass");
         compass.GetComponent<Compass>().player = FindTank(compass.GetComponent<Compass>().actornum);
 
         for (int i = 0; i < PlayersRemaining; ++i)
         {
             players_alive[i] = true;
         }
-
     }
-
 
     void Update()
     {
+        AssignCompass();        
+
         double time = PhotonNetwork.Time - StartTime;
 
         // Countdown Text
@@ -153,6 +154,38 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         //Debug.Log("Players Remaining: " + PlayersRemaining);
         //Debug.Log("Win: " + win);
 
+    }
+
+    private void AssignCompass()
+    {
+        GameObject marker = null;
+        if (!compass.GetComponent<Compass>().blue)
+        {
+            marker = GameObject.Find("TankBlue(Clone)");
+            if (marker != null)
+                compass.GetComponent<Compass>().blue = marker.GetComponent<TankMarker>();
+        }
+
+        if (!compass.GetComponent<Compass>().red)
+        {
+            marker = GameObject.Find("TankRed(Clone)");
+            if (marker != null)
+                compass.GetComponent<Compass>().red = marker.GetComponent<TankMarker>();
+        }
+
+        if (!compass.GetComponent<Compass>().yellow)
+        {
+            marker = GameObject.Find("TankYellow(Clone)");
+            if (marker != null)
+                compass.GetComponent<Compass>().yellow = marker.GetComponent<TankMarker>();
+        }
+
+        if (!compass.GetComponent<Compass>().green)
+        {
+            marker = GameObject.Find("TankGreen(Clone)");
+            if (marker != null)
+                compass.GetComponent<Compass>().green = marker.GetComponent<TankMarker>();
+        }
     }
 
     public string GetWinner()
