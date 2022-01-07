@@ -13,6 +13,8 @@ public class FollowCamera : MonoBehaviourPun
     public float heightDmp = 2.0f;
     public float rotateDmp = 3.0f;
 
+    public GameObject targetObj;
+
     GameObject GM;
     GameObject player;
 
@@ -21,16 +23,24 @@ public class FollowCamera : MonoBehaviourPun
         if (GM == null)
             GM = GameObject.Find("GameManager(Clone)");
 
-        if (!target)
+        if (target)
+        {
+            targetObj = target.gameObject;
+
+            if (targetObj != null)
+            {
+                if (!targetObj.activeSelf)
+                {
+                    // Find another tank to spectate
+                    player = GameObject.Find(GM.GetComponent<GameManager>().GetWinner() + "(Clone)");
+
+                }
+            }                
+        }
+
+        else if (!target)
         {
             player = GM.GetComponent<GameManager>().ReturnPlayerAlive();
-
-            // Dead
-            if(!player.activeInHierarchy)
-            {
-                // Find another tank to spectate
-                player = GameObject.Find(GM.GetComponent<GameManager>().GetWinner() + "(Clone)");
-            }
 
             if (player)
                 target = player.transform;
