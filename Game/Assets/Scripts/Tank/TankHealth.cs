@@ -56,6 +56,17 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (GM == null)
             GM = GameObject.Find("GameManager(Clone)");
+
+        if(m_Dead)
+        {
+            //Spectate
+            GameObject target = GameObject.Find(Spectate() + "(Clone)");
+            Camera.main.GetComponent<FollowCamera>().target = target.transform;
+            
+            GameObject killerName = GameObject.Find("KillerName");
+            killerName.GetComponent<Text>().enabled = true;
+            killerName.GetComponent<Text>().text = target.GetComponent<PhotonView>().Owner.NickName;
+        }
     }
     
 
@@ -90,33 +101,16 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
         // Play the effects for the death of the tank and deactivate it.
         m_Dead = true;
 
-        string name;
-        if (killer == PhotonNetwork.LocalPlayer.ActorNumber/* && PhotonNetwork.PlayerList.Length > 1*/) //suicide
+        if (GM.GetComponent<GameManager>().ReturnPlayersLeft() >= 2) //TODO: Here goes a 2, set to 1 for tests 
         {
-            name = "yourself";
-            killer = PhotonNetwork.LocalPlayer.GetNext().ActorNumber; //follow next player
-        }
-        else
-        {
-            name = PhotonNetwork.CurrentRoom.GetPlayer(killer).NickName;
-        }
-        GameObject.Find("PlayerManager(Clone)").GetComponent<PlayerManager>().dead = true;
-        GameObject.Find("PlayerManager(Clone)").GetComponent<PlayerManager>().killer = killer;
-
-        if (GM.GetComponent<GameManager>().ReturnPlayersLeft() > 2) //TODO: Here goes a 2, set to 1 for tests 
-        {
-            //PopUp kill
-            GameObject killerName = GameObject.Find("KillerName");
-            killerName.GetComponent<Text>().enabled = true;
-            killerName.GetComponent<Text>().text = "Killer: " + name;
             //popup.GetComponentInChildren<Text>().enabled = true;
             //popup.GetComponentInChildren<Text>().text = "You were killed by " + name;
 
             //show spectate button
-            GameObject spectate = GameObject.Find("Spectate");
-            spectate.GetComponent<Image>().enabled = true;
-            spectate.GetComponent<Button>().enabled = true;
-            spectate.GetComponentInChildren<Text>().enabled = true;
+            //GameObject spectate = GameObject.Find("Spectate");
+            //spectate.GetComponent<Image>().enabled = true;
+            //spectate.GetComponent<Button>().enabled = true;
+            //spectate.GetComponentInChildren<Text>().enabled = true;
 
             //show exit button
             GameObject exit = GameObject.Find("Exit");
@@ -141,6 +135,38 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
         m_ExplosionAudio.Play();
 
         gameObject.SetActive(false);
+    }
+
+    private string Spectate()
+    {
+        GameObject targetTank = null;
+        string tankName = " ";
+
+        targetTank = GameObject.Find("TankBlue(Clone)");
+
+        if (targetTank != null && targetTank.activeSelf)
+            tankName = "TankBlue";
+
+        else
+        {
+            targetTank = GameObject.Find("TankRed(Clone)");
+
+            if (targetTank != null && targetTank.activeSelf)
+                tankName = "TankRed";
+
+            else
+            {
+                targetTank = GameObject.Find("TankYellow(Clone)");
+
+                if (targetTank != null && targetTank.activeSelf)
+                    tankName = "TankYellow";
+
+                else
+                    tankName = "TankGreen";
+            }
+        }
+
+        return tankName;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
