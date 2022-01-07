@@ -20,7 +20,7 @@ public class TankMovement : MonoBehaviour
     
     private string m_MovementAxisName;     
     private string m_TurnAxisName;         
-    private Rigidbody m_Rigidbody;         
+    public Rigidbody m_Rigidbody;         
     private float m_MovementInputValue;    
     private float m_TurnInputValue;        
     private float m_OriginalPitch;
@@ -29,7 +29,7 @@ public class TankMovement : MonoBehaviour
 
     GameObject GM;
 
-    private void Awake()
+    public void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
     }
@@ -49,7 +49,7 @@ public class TankMovement : MonoBehaviour
     }
 
 
-    private void Start()
+    public void Start()
     {
         myPV = GetComponent<PhotonView>();
 
@@ -60,7 +60,7 @@ public class TankMovement : MonoBehaviour
     }
     
 
-    private void Update()
+    public void Update()
     {
         if (GM == null)
             GM = GameObject.Find("GameManager(Clone)");
@@ -103,7 +103,7 @@ public class TankMovement : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    public void FixedUpdate()
     {
         if(myPV.IsMine)
         {
@@ -114,7 +114,7 @@ public class TankMovement : MonoBehaviour
     }
 
 
-    private void Move()
+    public void Move()
     {
         // Adjust the position of the tank based on the player's input.
         Vector3 movement = transform.forward * m_MovementInputValue * m_Speed * Time.deltaTime;
@@ -123,7 +123,7 @@ public class TankMovement : MonoBehaviour
     }
 
 
-    private void Turn()
+    public void Turn()
     {
         // Adjust the rotation of the tank based on the player's input.
 

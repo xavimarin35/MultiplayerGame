@@ -66,6 +66,9 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         // How many players are there in the room
         PlayersRemaining = PhotonNetwork.PlayerList.Length;
 
+        GameObject compass = GameObject.Find("Compass");
+        compass.GetComponent<Compass>().player = FindTank(compass.GetComponent<Compass>().actornum);
+
         for (int i = 0; i < PlayersRemaining; ++i)
         {
             players_alive[i] = true;
@@ -138,7 +141,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
             if (PhotonNetwork.IsMasterClient /*&& all players accept rematch*/)
             {
-                if (PhotonNetwork.Time - WinTime > 4 && !change_sceen) // 4
+                if (PhotonNetwork.Time - WinTime > 100000 && !change_sceen) // 4
                 {
                     change_sceen = true;
                     this.photonView.RPC("WinScreen", RpcTarget.All);
@@ -237,7 +240,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         return player;
     }
 
-    private GameObject FindTank(int actor)
+    public GameObject FindTank(int actor)
     {
         GameObject tank = null;
 
