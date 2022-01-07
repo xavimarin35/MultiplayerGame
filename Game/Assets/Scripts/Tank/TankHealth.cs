@@ -9,6 +9,9 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
     Scene scene;
     GameObject GM;
 
+    public int killer;
+    public GameObject playerKiller;
+
     public float m_StartingHealth = 100f;          
     public Slider m_Slider;                        
     public Image m_FillImage;                      
@@ -87,29 +90,48 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
         // Play the effects for the death of the tank and deactivate it.
         m_Dead = true;
 
+        string name;
+        if (killer == PhotonNetwork.LocalPlayer.ActorNumber/* && PhotonNetwork.PlayerList.Length > 1*/) //suicide
+        {
+            name = "yourself";
+            killer = PhotonNetwork.LocalPlayer.GetNext().ActorNumber; //follow next player
+        }
+        else
+        {
+            name = PhotonNetwork.CurrentRoom.GetPlayer(killer).NickName;
+        }
+        GameObject.Find("PlayerManager(Clone)").GetComponent<PlayerManager>().dead = true;
+        GameObject.Find("PlayerManager(Clone)").GetComponent<PlayerManager>().killer = killer;
+
         if (GM.GetComponent<GameManager>().ReturnPlayersLeft() > 2) //TODO: Here goes a 2, set to 1 for tests 
         {
             //PopUp kill
-            GameObject popup = GameObject.Find("PopUpKill");
-            popup.GetComponent<Image>().enabled = true;
-            popup.GetComponentInChildren<Text>().enabled = true;
-            popup.GetComponentInChildren<Text>().text = "You were killed by " + name;
+            GameObject killerName = GameObject.Find("KillerName");
+            killerName.GetComponent<Text>().enabled = true;
+            killerName.GetComponent<Text>().text = "Killer: " + name;
+            //popup.GetComponentInChildren<Text>().enabled = true;
+            //popup.GetComponentInChildren<Text>().text = "You were killed by " + name;
 
-            ////show spectate button
-            //GameObject spectate = GameObject.Find("Spectate");
-            //spectate.GetComponent<Image>().enabled = true;
-            //spectate.GetComponent<Button>().enabled = true;
-            //spectate.GetComponentInChildren<Text>().enabled = true;
+            //show spectate button
+            GameObject spectate = GameObject.Find("Spectate");
+            spectate.GetComponent<Image>().enabled = true;
+            spectate.GetComponent<Button>().enabled = true;
+            spectate.GetComponentInChildren<Text>().enabled = true;
 
-            ////show exit button
-            //GameObject exit = GameObject.Find("Exit");
-            //exit.GetComponent<Image>().enabled = true;
-            //exit.GetComponent<Button>().enabled = true;
-            //exit.GetComponentInChildren<Text>().enabled = true;
+            //show exit button
+            GameObject exit = GameObject.Find("Exit");
+            exit.GetComponent<Image>().enabled = true;
+            exit.GetComponent<Button>().enabled = true;
+            exit.GetComponentInChildren<Text>().enabled = true;
         }
 
         //Notify game manager you died
         GM.GetComponent<GameManager>().OnPlayerDeath(PhotonNetwork.LocalPlayer.ActorNumber);
+
+        //Camera follow killer
+        //playerKiller = PhotonNetwork.CurrentRoom.GetPlayer(killer).TagObject as GameObject; //get killer
+        //Camera.main.GetComponent<FollowCamera>().target = playerKiller.transform; //follow killer
+        //Camera.main.GetComponent<FollowCamera>().distance += 10; //set new camera pos
 
         m_ExplosionParticles.transform.position = transform.position;
         m_ExplosionParticles.gameObject.SetActive(true);

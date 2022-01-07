@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
             if (PhotonNetwork.IsMasterClient /*&& all players accept rematch*/)
             {
-                if (PhotonNetwork.Time - WinTime > 100000 && !change_sceen) // 4
+                if (PhotonNetwork.Time - WinTime > 1000 && !change_sceen) // 4
                 {
                     change_sceen = true;
                     this.photonView.RPC("WinScreen", RpcTarget.All);

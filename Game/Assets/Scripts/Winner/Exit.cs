@@ -25,8 +25,9 @@ public class Exit : MonoBehaviourPunCallbacks
 
     public void ClosePopUp()
     {
-        //GameObject.Find("PopUpKill").SetActive(false);
-        //GameObject.Find("Spectate").SetActive(false);
+        GameObject.Find("Panel").SetActive(false);
+        GameObject.Find("KillerName").SetActive(false);
+        GameObject.Find("Spectate").SetActive(false);
     }
 
     public override void OnLeftRoom()

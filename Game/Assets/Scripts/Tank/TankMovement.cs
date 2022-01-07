@@ -25,13 +25,14 @@ public class TankMovement : MonoBehaviour
     private float m_TurnInputValue;        
     private float m_OriginalPitch;
 
-    private PhotonView myPV;
+    PhotonView PV;
 
     GameObject GM;
 
     public void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+        PV = GetComponent<PhotonView>();
     }
 
 
@@ -51,12 +52,14 @@ public class TankMovement : MonoBehaviour
 
     public void Start()
     {
-        myPV = GetComponent<PhotonView>();
+        PV = GetComponent<PhotonView>();
 
         m_MovementAxisName = "Vertical" + m_PlayerNumber;
         m_TurnAxisName = "Horizontal" + m_PlayerNumber;
 
         m_OriginalPitch = m_MovementAudio.pitch;
+
+        PV.Owner.TagObject = gameObject;
     }
     
 
@@ -65,7 +68,7 @@ public class TankMovement : MonoBehaviour
         if (GM == null)
             GM = GameObject.Find("GameManager(Clone)");
 
-        if (myPV.IsMine)
+        if (PV.IsMine)
         {
             if(GM.GetComponent<GameManager>().GameStarted())
             {
@@ -105,7 +108,7 @@ public class TankMovement : MonoBehaviour
 
     public void FixedUpdate()
     {
-        if(myPV.IsMine)
+        if(PV.IsMine)
         {
             // Move and turn the tank.
             Move();
