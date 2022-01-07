@@ -25,6 +25,13 @@ public class FollowCamera : MonoBehaviourPun
         {
             player = GM.GetComponent<GameManager>().ReturnPlayerAlive();
 
+            // Dead
+            if(!player.activeInHierarchy)
+            {
+                // Find another tank to spectate
+                player = GameObject.Find(GM.GetComponent<GameManager>().GetWinner() + "(Clone)");
+            }
+
             if (player)
                 target = player.transform;
         }

@@ -56,17 +56,6 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (GM == null)
             GM = GameObject.Find("GameManager(Clone)");
-
-        if(m_Dead)
-        {
-            //Spectate
-            GameObject target = GameObject.Find(Spectate() + "(Clone)");
-            Camera.main.GetComponent<FollowCamera>().target = target.transform;
-            
-            GameObject killerName = GameObject.Find("KillerName");
-            killerName.GetComponent<Text>().enabled = true;
-            killerName.GetComponent<Text>().text = target.GetComponent<PhotonView>().Owner.NickName;
-        }
     }
     
 
@@ -112,6 +101,14 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
             //spectate.GetComponent<Button>().enabled = true;
             //spectate.GetComponentInChildren<Text>().enabled = true;
 
+            //Spectate
+            //GameObject target = GameObject.Find(Spectate() + "(Clone)");
+            //Camera.main.GetComponent<FollowCamera>().target = target.transform;
+
+            //GameObject killerName = GameObject.Find("KillerName");
+            //killerName.GetComponent<Text>().enabled = true;
+            //killerName.GetComponent<Text>().text = target.GetComponent<PhotonView>().Owner.NickName;
+
             //show exit button
             GameObject exit = GameObject.Find("Exit");
             exit.GetComponent<Image>().enabled = true;
@@ -135,38 +132,6 @@ public class TankHealth : MonoBehaviourPunCallbacks, IPunObservable
         m_ExplosionAudio.Play();
 
         gameObject.SetActive(false);
-    }
-
-    private string Spectate()
-    {
-        GameObject targetTank = null;
-        string tankName = " ";
-
-        targetTank = GameObject.Find("TankBlue(Clone)");
-
-        if (targetTank != null && targetTank.activeSelf)
-            tankName = "TankBlue";
-
-        else
-        {
-            targetTank = GameObject.Find("TankRed(Clone)");
-
-            if (targetTank != null && targetTank.activeSelf)
-                tankName = "TankRed";
-
-            else
-            {
-                targetTank = GameObject.Find("TankYellow(Clone)");
-
-                if (targetTank != null && targetTank.activeSelf)
-                    tankName = "TankYellow";
-
-                else
-                    tankName = "TankGreen";
-            }
-        }
-
-        return tankName;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
