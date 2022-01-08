@@ -75,14 +75,14 @@ public class GameManager : MonoBehaviourPun, IPunObservable
             players_alive[i] = true;
         }
 
-        if (!compass.GetComponent<Compass>().allMarkers)
-            AssignCompass();
+        //if (!compass.GetComponent<Compass>().allMarkers)
+        //    AssignCompass();
     }
 
     void Update()
     {
-        if (!compass.GetComponent<Compass>().allMarkers)
-            AssignCompass();
+        //if (!compass.GetComponent<Compass>().allMarkers)
+        //    AssignCompass();
 
         double time = PhotonNetwork.Time - StartTime;
 
@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
             if (PhotonNetwork.IsMasterClient /*&& all players accept rematch*/)
             {
-                if (PhotonNetwork.Time - WinTime > 1000 && !change_sceen) // 4
+                if (PhotonNetwork.Time - WinTime > 4 && !change_sceen) // 4
                 {
                     change_sceen = true;
                     this.photonView.RPC("WinScreen", RpcTarget.All);

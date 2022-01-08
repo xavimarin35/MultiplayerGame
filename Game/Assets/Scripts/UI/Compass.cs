@@ -35,21 +35,24 @@ public class Compass : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!allMarkers)
-            AddMarkers();
+        // Descomentar perque funcionin els markers
+        //if (!allMarkers)
+        //    AddMarkers();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!allMarkers)
-            AddMarkers();
+        // Descomentar perque funcionin els markers
+        //if (!allMarkers)
+        //    AddMarkers();
 
         compassImage.uvRect = new Rect(player.transform.localEulerAngles.y / 360f, 0f, 1f, 1f);
 
         foreach (TankMarker marker in tankMarkers)
         {
-            marker.image.rectTransform.anchoredPosition = GetPosOnCompass(marker);
+            if (!marker)
+                marker.image.rectTransform.anchoredPosition = GetPosOnCompass(marker);
         }
     }
 
